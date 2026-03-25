@@ -5,4 +5,4 @@ export {
   snapshotsDashboard,
   snapshotsPositivacao,
   snapshotsTop5Itens,
-} from '../../apps/api/src/db/schema.js'
+} from '../../../apps/api/src/db/schema.js'

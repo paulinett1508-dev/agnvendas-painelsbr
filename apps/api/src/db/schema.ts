@@ -14,7 +14,7 @@ export const vendedores = pgTable('vendedores', {
   nome: varchar('nome', { length: 255 }),
   funcao: varchar('funcao', { length: 100 }),
   ativo: boolean('ativo').default(true),
-  createdAt: timestamp('created_at').defaultNow(),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
 })
 
 export const snapshotsDashboard = pgTable('snapshots_dashboard', {
@@ -26,7 +26,7 @@ export const snapshotsDashboard = pgTable('snapshots_dashboard', {
   ticketMedioDia: numeric('ticket_medio_dia', { precision: 15, scale: 2 }),
   percentualMes: numeric('percentual_mes', { precision: 8, scale: 4 }),
   mediaMes: numeric('media_mes', { precision: 15, scale: 2 }),
-  capturedAt: timestamp('captured_at').defaultNow(),
+  capturedAt: timestamp('captured_at', { withTimezone: true }).defaultNow(),
 })
 
 export const snapshotsPositivacao = pgTable('snapshots_positivacao', {
@@ -39,7 +39,7 @@ export const snapshotsPositivacao = pgTable('snapshots_positivacao', {
   vrFatMesAnterior1: numeric('vr_fat_mes_anterior1', { precision: 15, scale: 2 }),
   vrFatMesAnterior2: numeric('vr_fat_mes_anterior2', { precision: 15, scale: 2 }),
   vrFatMesAnterior3: numeric('vr_fat_mes_anterior3', { precision: 15, scale: 2 }),
-  capturedAt: timestamp('captured_at').defaultNow(),
+  capturedAt: timestamp('captured_at', { withTimezone: true }).defaultNow(),
 })
 
 export const snapshotsTop5Itens = pgTable('snapshots_top5itens', {
@@ -49,5 +49,5 @@ export const snapshotsTop5Itens = pgTable('snapshots_top5itens', {
   item: varchar('item', { length: 255 }),
   qtd: integer('qtd'),
   percentual: numeric('percentual', { precision: 8, scale: 4 }),
-  capturedAt: timestamp('captured_at').defaultNow(),
+  capturedAt: timestamp('captured_at', { withTimezone: true }).defaultNow(),
 })

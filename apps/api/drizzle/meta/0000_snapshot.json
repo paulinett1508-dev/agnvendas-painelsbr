@@ -1,0 +1,260 @@
+{
+  "id": "510c6282-2577-41e1-a34e-f02ee87e0990",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "6",
+  "dialect": "postgresql",
+  "tables": {
+    "public.snapshots_dashboard": {
+      "name": "snapshots_dashboard",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "slpcode": {
+          "name": "slpcode",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "meta": {
+          "name": "meta",
+          "type": "numeric(15, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "faturamento_mes": {
+          "name": "faturamento_mes",
+          "type": "numeric(15, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "faturamento_dia": {
+          "name": "faturamento_dia",
+          "type": "numeric(15, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ticket_medio_dia": {
+          "name": "ticket_medio_dia",
+          "type": "numeric(15, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "percentual_mes": {
+          "name": "percentual_mes",
+          "type": "numeric(8, 4)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "media_mes": {
+          "name": "media_mes",
+          "type": "numeric(15, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "captured_at": {
+          "name": "captured_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.snapshots_positivacao": {
+      "name": "snapshots_positivacao",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "slpcode": {
+          "name": "slpcode",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "base_ativa": {
+          "name": "base_ativa",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "positivacao_atual": {
+          "name": "positivacao_atual",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "qtd_venda_mes_atual": {
+          "name": "qtd_venda_mes_atual",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "vr_fat_mes_atual": {
+          "name": "vr_fat_mes_atual",
+          "type": "numeric(15, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "vr_fat_mes_anterior1": {
+          "name": "vr_fat_mes_anterior1",
+          "type": "numeric(15, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "vr_fat_mes_anterior2": {
+          "name": "vr_fat_mes_anterior2",
+          "type": "numeric(15, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "vr_fat_mes_anterior3": {
+          "name": "vr_fat_mes_anterior3",
+          "type": "numeric(15, 2)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "captured_at": {
+          "name": "captured_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.snapshots_top5itens": {
+      "name": "snapshots_top5itens",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "slpcode": {
+          "name": "slpcode",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "itemcode": {
+          "name": "itemcode",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "item": {
+          "name": "item",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "qtd": {
+          "name": "qtd",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "percentual": {
+          "name": "percentual",
+          "type": "numeric(8, 4)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "captured_at": {
+          "name": "captured_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "public.vendedores": {
+      "name": "vendedores",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "slpcode": {
+          "name": "slpcode",
+          "type": "varchar(50)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "nome": {
+          "name": "nome",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "funcao": {
+          "name": "funcao",
+          "type": "varchar(100)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "ativo": {
+          "name": "ativo",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": false,
+          "default": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "vendedores_slpcode_unique": {
+          "name": "vendedores_slpcode_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "slpcode"
+          ]
+        }
+      }
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

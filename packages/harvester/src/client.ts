@@ -1,3 +1,7 @@
+import { config } from 'dotenv'
+import { fileURLToPath } from 'url'
+import { resolve, dirname } from 'path'
+config({ path: resolve(dirname(fileURLToPath(import.meta.url)), '../../../.env') })
 import axios from 'axios'
 
 const SUPABASE_URL = process.env.SUPABASE_URL!

@@ -1,0 +1,42 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(docker compose:*)",
+      "Bash(npx skills:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git fetch:*)",
+      "Bash(docker --version)",
+      "Bash(pnpm:*)",
+      "Bash(npx drizzle-kit:*)",
+      "Bash(DATABASE_URL=\"postgresql://postgres:postgres@localhost:5432/agnvendas\" npx drizzle-kit migrate)",
+      "Bash(docker exec:*)",
+      "Bash(PGPASSWORD=postgres psql -h 127.0.0.1 -p 5432 -U postgres -d agnvendas -c \"SELECT 1;\" 2>&1)",
+      "Bash(node -e \"const { Client } = require\\(''pg''\\); const c = new Client\\({host:''127.0.0.1'',port:5432,user:''postgres'',password:''postgres'',database:''agnvendas''}\\); c.connect\\(\\).then\\(\\(\\)=>{console.log\\(''OK''\\); c.end\\(\\)}\\).catch\\(e=>console.error\\(''ERR:'', e.message, e.code\\)\\)\")",
+      "Bash(node -e \"const { Client } = require\\(''pg''\\); const c = new Client\\({host:''127.0.0.1'',port:5432,user:''postgres'',password:''painel'',database:''agnvendas''}\\); c.connect\\(\\).then\\(\\(\\)=>{console.log\\(''OK''\\); c.end\\(\\)}\\).catch\\(e=>console.error\\(''ERR:'', e.message\\)\\)\")",
+      "Bash(node -e \"const { Client } = require\\(''pg''\\); const c = new Client\\({host:''127.0.0.1'',port:5432,user:''postgres'',password:''postgres'',database:''agnvendas''}\\); c.connect\\(\\).then\\(\\(\\)=>{console.log\\(''OK''\\); c.end\\(\\)}\\).catch\\(e=>console.error\\(''ERR:'', e.message\\)\\)\")",
+      "Bash(node -e \"const { Client } = require\\(''pg''\\); const c = new Client\\({host:''127.0.0.1'',port:5432,user:''postgres'',database:''agnvendas''}\\); c.connect\\(\\).then\\(\\(\\)=>{console.log\\(''OK''\\); c.end\\(\\)}\\).catch\\(e=>console.error\\(''ERR:'', e.message\\)\\)\")",
+      "Bash(docker restart:*)",
+      "Bash(node -e \"const { Client } = require\\(''''pg''''\\); const c = new Client\\({host:''''127.0.0.1'''',port:5432,user:''''postgres'''',password:''''postgres'''',database:''''agnvendas''''}\\); c.connect\\(\\).then\\(\\(\\)=>{console.log\\(''''OK''''\\); c.end\\(\\)}\\).catch\\(e=>console.error\\(''''ERR:'''', e.message\\)\\)\")",
+      "Bash(netstat -ano)",
+      "Bash(tasklist /FI \"PID eq 5176\")",
+      "Bash(tasklist /FI \"PID eq 6616\")",
+      "Bash(powershell \"Get-Process -Id 5176,6616 | Select-Object Id,ProcessName,Path\" 2>&1)",
+      "Bash(node -e \"const { Client } = require\\(''pg''\\); const c = new Client\\({host:''127.0.0.1'',port:5433,user:''postgres'',password:''postgres'',database:''agnvendas''}\\); c.connect\\(\\).then\\(\\(\\)=>{console.log\\(''OK''\\); c.end\\(\\)}\\).catch\\(e=>console.error\\(''ERR:'', e.message\\)\\)\")",
+      "Bash(DATABASE_URL=\"postgresql://postgres:postgres@localhost:5433/agnvendas\" npx drizzle-kit migrate)",
+      "Bash(curl -s http://localhost:3001/health)",
+      "Bash(curl -s http://localhost:3001/vendedores)",
+      "Bash(curl -s \"http://localhost:3001/dashboard\")",
+      "Bash(python -m json.tool)",
+      "Bash(curl -s http://localhost:3001/dashboard/latest)",
+      "Bash(curl -s http://localhost:3001/top5itens/2)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:5173)",
+      "Bash(npx tsc:*)",
+      "Bash(curl:*)",
+      "Bash(ssh-keygen -l -f /c/Users/pmiranda/.ssh/id_ed25519.pub)",
+      "Bash(echo \"HOME=$HOME\")",
+      "Read(//c/PROJETOS/agnvendas-painelsbr/$HOME/**)"
+    ]
+  }
+}
