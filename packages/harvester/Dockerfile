@@ -7,7 +7,7 @@ COPY pnpm-workspace.yaml package.json pnpm-lock.yaml* ./
 COPY packages/harvester/package.json ./packages/harvester/
 COPY apps/api/package.json ./apps/api/
 
-RUN pnpm install --frozen-lockfile --filter harvester
+RUN pnpm install --frozen-lockfile --filter harvester --filter api
 
 COPY packages/harvester/ ./packages/harvester/
 COPY apps/api/src/db/ ./apps/api/src/db/
