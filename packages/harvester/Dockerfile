@@ -1,7 +1,7 @@
 FROM node:20-alpine
 WORKDIR /app
 
-RUN npm install -g pnpm@10
+RUN npm install -g pnpm@10 tsx
 
 COPY pnpm-workspace.yaml package.json pnpm-lock.yaml* ./
 COPY packages/harvester/package.json ./packages/harvester/
@@ -12,4 +12,4 @@ RUN pnpm install --frozen-lockfile --filter harvester
 COPY packages/harvester/ ./packages/harvester/
 COPY apps/api/src/db/ ./apps/api/src/db/
 
-CMD ["node", "--loader", "tsx/esm", "packages/harvester/src/index.ts"]
+CMD ["tsx", "packages/harvester/src/index.ts"]
