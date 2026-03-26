@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { NavLink, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard,
   Users,
@@ -8,31 +9,36 @@ import {
   Flame,
   Menu,
   X,
+  LogOut,
 } from 'lucide-react'
 import { useTheme } from '../context/ThemeContext'
+import { useAuth } from '../context/AuthContext'
 import { Sun, Moon } from 'lucide-react'
 
 interface NavItem {
   id: string
   label: string
+  path: string
   icon: React.ReactNode
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { id: 'dashboard', label: 'Dashboard',    icon: <LayoutDashboard size={18} /> },
-  { id: 'vendedores', label: 'Vendedores',  icon: <Users size={18} /> },
-  { id: 'positivacao', label: 'Positivação', icon: <Target size={18} /> },
+  { id: 'dashboard',   label: 'Dashboard',    path: '/',            icon: <LayoutDashboard size={18} /> },
+  { id: 'vendedores',  label: 'Vendedores',   path: '/vendedores',  icon: <Users size={18} /> },
+  { id: 'positivacao', label: 'Positivação',  path: '/positivacao', icon: <Target size={18} /> },
 ]
 
-interface SidebarProps {
-  active: string
-  onChange: (id: string) => void
-}
-
-export default function Sidebar({ active, onChange }: SidebarProps) {
+export default function Sidebar() {
   const [collapsed, setCollapsed] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const { theme, toggle } = useTheme()
+  const { logout } = useAuth()
+  const navigate = useNavigate()
+
+  async function handleLogout() {
+    await logout()
+    navigate('/login')
+  }
 
   const content = (
     <div
@@ -102,21 +108,24 @@ export default function Sidebar({ active, onChange }: SidebarProps) {
           </p>
         )}
         {NAV_ITEMS.map((item) => (
-          <button
+          <NavLink
             key={item.id}
-            className={`sidebar-item w-full ${active === item.id ? 'active' : ''}`}
-            onClick={() => {
-              onChange(item.id)
-              setMobileOpen(false)
-            }}
+            to={item.path}
+            end={item.path === '/'}
+            className={({ isActive }) => `sidebar-item w-full ${isActive ? 'active' : ''}`}
+            onClick={() => setMobileOpen(false)}
             title={collapsed ? item.label : undefined}
-            style={{ justifyContent: collapsed ? 'center' : undefined }}
+            style={{ justifyContent: collapsed ? 'center' : undefined, textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 10 }}
           >
-            <span className="shrink-0" style={{ color: active === item.id ? 'var(--orange)' : 'var(--text-secondary)' }}>
-              {item.icon}
-            </span>
-            {!collapsed && <span>{item.label}</span>}
-          </button>
+            {({ isActive }) => (
+              <>
+                <span className="shrink-0" style={{ color: isActive ? 'var(--orange)' : 'var(--text-secondary)' }}>
+                  {item.icon}
+                </span>
+                {!collapsed && <span>{item.label}</span>}
+              </>
+            )}
+          </NavLink>
         ))}
       </nav>
 
@@ -140,6 +149,19 @@ export default function Sidebar({ active, onChange }: SidebarProps) {
               {theme === 'dark' ? 'Tema Claro' : 'Tema Escuro'}
             </span>
           )}
+        </button>
+
+        {/* Logout */}
+        <button
+          className="sidebar-item w-full"
+          onClick={handleLogout}
+          style={{ justifyContent: collapsed ? 'center' : undefined }}
+          title="Sair"
+        >
+          <span className="shrink-0" style={{ color: 'var(--text-secondary)' }}>
+            <LogOut size={18} />
+          </span>
+          {!collapsed && <span style={{ color: 'var(--text-secondary)' }}>Sair</span>}
         </button>
 
         {/* Collapse toggle — desktop only */}
