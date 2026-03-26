@@ -914,10 +914,11 @@ export default async function authRoutes(app: FastifyInstance) {
     const refreshToken = req.cookies?.[COOKIE_NAME]
     if (!refreshToken) throw new AppError(401, 'Refresh token ausente')
 
+    const { isNotNull } = await import('drizzle-orm')
     const candidatos = await db
       .select()
       .from(usuarios)
-      .where(eq(usuarios.refreshTokenHash, usuarios.refreshTokenHash)) // busca apenas os que têm hash
+      .where(isNotNull(usuarios.refreshTokenHash))
 
     let match: typeof candidatos[0] | null = null
     for (const u of candidatos) {
@@ -2128,18 +2129,21 @@ describe('GET /vendedores', () => {
 })
 ```
 
-**Nota importante (Step 0):** Antes de escrever os testes, refatorar `apps/api/src/index.ts` para separar a construção do app do `app.listen`. Criar `apps/api/src/app.ts` que exporta `buildApp()` e `index.ts` apenas importa e chama `buildApp().then(app => app.listen(...))`. Isso permite que os testes importem o app sem iniciar o servidor.
+**Nota:** `buildApp()` foi criada no Step 0 acima. Os testes importam diretamente de `../app.js`.
 
 - [ ] **Step 2: Criar `apps/api/src/test/auth.integration.test.ts`**
 
 ```typescript
 import { describe, it, expect, beforeAll, afterAll } from 'vitest'
+import buildFastifyApp from '../app.js'
 import { createUsuario } from './factories.js'
 
-describe('POST /auth/login', () => {
-  let app: Awaited<ReturnType<typeof buildApp>>
+type App = Awaited<ReturnType<typeof buildFastifyApp>>
 
-  beforeAll(async () => { app = await buildApp() })
+describe('POST /auth/login', () => {
+  let app: App
+
+  beforeAll(async () => { app = await buildFastifyApp() })
   afterAll(() => app.close())
 
   it('retorna accessToken com credenciais válidas', async () => {
@@ -2427,6 +2431,10 @@ jobs:
           DATABASE_URL: postgresql://painelsbr:changeme@localhost:5433/painelsbr
       - run: pnpm test:e2e
         env:
+          # Envs necessárias para o webServer (pnpm dev → API) subir corretamente no CI
+          DATABASE_URL: postgresql://painelsbr:changeme@localhost:5433/painelsbr
+          JWT_SECRET: ci_test_secret_minimum_32_chars_xx
+          CORS_ORIGIN: http://localhost:5173
           ADMIN_EMAIL: admin@laboratoriosobral.com.br
           ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
 ```
@@ -2479,6 +2487,6 @@ Esperado: `{"status":"ok"}`, `401`, e um token JWT.
 ## Critérios de Sucesso
 
 - [ ] **Wave 1:** `curl /api/health` → 200; `curl /api/dashboard/abc` → 400 (não 500); logs pino JSON no container
-- [ ] **Wave 2:** `curl /api/vendedores` sem token → 401; login → 200 com `accessToken`; 6ª tentativa de login → 429
+- [ ] **Wave 2:** `curl /api/vendedores` sem token → 401; login → 200 com `accessToken`; rate-limit testado via E2E na Wave 4
 - [ ] **Wave 3:** `pnpm lint` → 0 erros; `pnpm typecheck` → 0 erros; `\di idx_*` no pg → 3 índices
 - [ ] **Wave 4:** `pnpm test` → verde; cobertura ≥75% api, ≥60% harvester; `pnpm test:e2e` → 3 suites verdes; CI verde no GitHub
