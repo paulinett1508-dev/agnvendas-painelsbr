@@ -171,6 +171,10 @@ Workflow `ci.yml` em todo PR para `main`:
 
 Bloqueia merge se qualquer step falhar.
 
+`playwright.config.ts` usará `webServer` config para subir `pnpm dev` automaticamente antes dos testes E2E no CI — sem necessidade de step separado de build.
+
+**Fora de escopo (backlog):** rota autenticada para troca de senha do admin. Por ora, `pnpm seed:admin` cria o admin inicial; troca de senha deve ser feita diretamente no banco via script SQL.
+
 ---
 
 ## Decisões Técnicas
@@ -212,7 +216,7 @@ Bloqueia merge se qualquer step falhar.
 - `eslint.config.js` — config raiz
 - `.prettierrc` — config Prettier
 - `.husky/pre-commit` — hook
-- `apps/api/src/db/migrations/003_indices.ts` — nova migration
+- `apps/api/src/db/migrations/` — arquivo `.sql` gerado automaticamente por `drizzle-kit generate` (não criado manualmente); nome definido pelo Drizzle com timestamp (ex: `0002_indices.sql`)
 
 ### Wave 4
 - `apps/api/src/**/*.test.ts` — unit + integration tests
