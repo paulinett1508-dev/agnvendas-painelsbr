@@ -1,7 +1,9 @@
 import { env } from './env.js'
 import Fastify from 'fastify'
 import cors from '@fastify/cors'
+import fastifyCookie from '@fastify/cookie'
 import authenticate from './plugins/authenticate.js'
+import authRoutes from './routes/auth.js'
 import { db, pool } from './db/client.js'
 import {
   vendedores,
@@ -31,6 +33,8 @@ app.decorate('config', { JWT_SECRET: env.JWT_SECRET, CORS_ORIGIN: env.CORS_ORIGI
 
 await app.register(cors, { origin: true })
 
+await app.register(fastifyCookie)
+
 app.setErrorHandler((error, request, reply) => {
   if (isAppError(error)) {
     return reply.status(error.statusCode).send({
@@ -43,6 +47,8 @@ app.setErrorHandler((error, request, reply) => {
 })
 
 await app.register(authenticate)
+
+await app.register(authRoutes)
 
 app.get('/health', async () => ({ status: 'ok' }))
 
