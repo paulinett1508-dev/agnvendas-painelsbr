@@ -7,7 +7,8 @@
     "build": "pnpm --filter './apps/*' build",
     "harvester:run": "pnpm --filter harvester start",
     "db:generate": "pnpm --filter api db:generate",
-    "db:migrate": "pnpm --filter api db:migrate"
+    "db:migrate": "pnpm --filter api db:migrate",
+    "seed:admin": "pnpm --filter api seed:admin"
   },
   "engines": {
     "node": ">=20",
