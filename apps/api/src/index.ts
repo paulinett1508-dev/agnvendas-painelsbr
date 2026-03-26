@@ -6,6 +6,9 @@ import fastifyCookie from '@fastify/cookie'
 import authenticate from './plugins/authenticate.js'
 import authRoutes from './routes/auth.js'
 import { db, pool } from './db/client.js'
+import { migrate } from 'drizzle-orm/node-postgres/migrator'
+import { fileURLToPath } from 'url'
+import { dirname, join } from 'path'
 import {
   vendedores,
   snapshotsDashboard,
@@ -157,6 +160,9 @@ app.get(
       .orderBy(desc(snapshotsTop5Itens.percentual))
   }
 )
+
+const __dirname = dirname(fileURLToPath(import.meta.url))
+await migrate(db, { migrationsFolder: join(__dirname, '../drizzle') })
 
 const port = env.API_PORT
 const host = env.API_HOST
