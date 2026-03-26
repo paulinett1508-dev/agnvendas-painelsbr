@@ -1,7 +1,7 @@
 import { env } from './env.js'
 import Fastify from 'fastify'
 import cors from '@fastify/cors'
-import { db } from './db/client.js'
+import { db, pool } from './db/client.js'
 import {
   vendedores,
   snapshotsDashboard,
@@ -138,9 +138,15 @@ app.get(
 const port = env.API_PORT
 const host = env.API_HOST
 
-app.listen({ port, host }, (err) => {
-  if (err) {
-    app.log.error(err)
-    process.exit(1)
-  }
-})
+await app.listen({ port, host })
+
+const shutdown = async (signal: string) => {
+  app.log.info({ signal }, 'sinal recebido, encerrando...')
+  await app.close()
+  await pool.end()
+  app.log.info('servidor encerrado')
+  process.exit(0)
+}
+
+process.on('SIGTERM', () => shutdown('SIGTERM'))
+process.on('SIGINT', () => shutdown('SIGINT'))
