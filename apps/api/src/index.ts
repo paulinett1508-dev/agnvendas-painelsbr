@@ -1,3 +1,4 @@
+import './env.js'
 import Fastify from 'fastify'
 import cors from '@fastify/cors'
 import { db } from './db/client.js'
@@ -8,10 +9,30 @@ import {
   snapshotsTop5Itens,
 } from './db/schema.js'
 import { desc, eq, sql } from 'drizzle-orm'
+import { isAppError } from './errors.js'
 
-const app = Fastify({ logger: true })
+const app = Fastify({
+  logger: {
+    level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
+    ...(process.env.NODE_ENV !== 'production' && {
+      transport: { target: 'pino-pretty', options: { colorize: true } },
+    }),
+  },
+  genReqId: () => crypto.randomUUID(),
+})
 
 await app.register(cors, { origin: true })
+
+app.setErrorHandler((error, request, reply) => {
+  if (isAppError(error)) {
+    return reply.status(error.statusCode).send({
+      error: error.message,
+      code: error.code,
+    })
+  }
+  request.log.error({ err: error }, 'unhandled error')
+  return reply.status(500).send({ error: 'Erro interno do servidor' })
+})
 
 app.get('/health', async () => ({ status: 'ok' }))
 
