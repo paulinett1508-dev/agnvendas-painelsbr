@@ -1,6 +1,7 @@
 import { env } from './env.js'
 import Fastify from 'fastify'
 import cors from '@fastify/cors'
+import rateLimit from '@fastify/rate-limit'
 import fastifyCookie from '@fastify/cookie'
 import authenticate from './plugins/authenticate.js'
 import authRoutes from './routes/auth.js'
@@ -31,7 +32,16 @@ app.setSerializerCompiler(serializerCompiler)
 
 app.decorate('config', { JWT_SECRET: env.JWT_SECRET, CORS_ORIGIN: env.CORS_ORIGIN })
 
-await app.register(cors, { origin: true })
+await app.register(rateLimit, {
+  max: 100,
+  timeWindow: '1 minute',
+  errorResponseBuilder: () => ({ error: 'Muitas requisições. Tente novamente em 1 minuto.' }),
+})
+
+await app.register(cors, {
+  origin: env.CORS_ORIGIN,
+  credentials: true,
+})
 
 await app.register(fastifyCookie)
 
