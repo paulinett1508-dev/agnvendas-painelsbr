@@ -10,6 +10,8 @@ import {
 } from './db/schema.js'
 import { desc, eq, sql } from 'drizzle-orm'
 import { isAppError } from './errors.js'
+import { serializerCompiler, validatorCompiler, ZodTypeProvider } from 'fastify-type-provider-zod'
+import { z } from 'zod'
 
 const app = Fastify({
   logger: {
@@ -19,7 +21,10 @@ const app = Fastify({
     }),
   },
   genReqId: () => crypto.randomUUID(),
-})
+}).withTypeProvider<ZodTypeProvider>()
+
+app.setValidatorCompiler(validatorCompiler)
+app.setSerializerCompiler(serializerCompiler)
 
 await app.register(cors, { origin: true })
 
@@ -69,14 +74,22 @@ app.get('/dashboard/latest', async () => {
 })
 
 // Histórico de dashboard de um vendedor
-app.get<{ Params: { slpcode: string } }>('/dashboard/:slpcode', async (req) => {
-  return db
-    .select()
-    .from(snapshotsDashboard)
-    .where(eq(snapshotsDashboard.slpcode, req.params.slpcode))
-    .orderBy(desc(snapshotsDashboard.capturedAt))
-    .limit(200)
-})
+app.get(
+  '/dashboard/:slpcode',
+  {
+    schema: {
+      params: z.object({ slpcode: z.string().regex(/^\d{1,10}$/, 'slpcode inválido') }),
+    },
+  },
+  async (req) => {
+    return db
+      .select()
+      .from(snapshotsDashboard)
+      .where(eq(snapshotsDashboard.slpcode, req.params.slpcode))
+      .orderBy(desc(snapshotsDashboard.capturedAt))
+      .limit(200)
+  }
+)
 
 // Último snapshot de positivação de cada vendedor
 app.get('/positivacao/latest', async () => {
@@ -96,23 +109,31 @@ app.get('/positivacao/latest', async () => {
 })
 
 // Top 5 itens mais recentes de um vendedor
-app.get<{ Params: { slpcode: string } }>('/top5itens/:slpcode', async (req) => {
-  const latest = await db
-    .select({ maxAt: sql<Date>`MAX(${snapshotsTop5Itens.capturedAt})`.as('max_at') })
-    .from(snapshotsTop5Itens)
-    .where(eq(snapshotsTop5Itens.slpcode, req.params.slpcode))
+app.get(
+  '/top5itens/:slpcode',
+  {
+    schema: {
+      params: z.object({ slpcode: z.string().regex(/^\d{1,10}$/, 'slpcode inválido') }),
+    },
+  },
+  async (req) => {
+    const latest = await db
+      .select({ maxAt: sql<Date>`MAX(${snapshotsTop5Itens.capturedAt})`.as('max_at') })
+      .from(snapshotsTop5Itens)
+      .where(eq(snapshotsTop5Itens.slpcode, req.params.slpcode))
 
-  const maxAt = latest[0]?.maxAt
-  if (!maxAt) return []
+    const maxAt = latest[0]?.maxAt
+    if (!maxAt) return []
 
-  return db
-    .select()
-    .from(snapshotsTop5Itens)
-    .where(
-      sql`${snapshotsTop5Itens.slpcode} = ${req.params.slpcode} AND ${snapshotsTop5Itens.capturedAt} = ${maxAt}`,
-    )
-    .orderBy(desc(snapshotsTop5Itens.percentual))
-})
+    return db
+      .select()
+      .from(snapshotsTop5Itens)
+      .where(
+        sql`${snapshotsTop5Itens.slpcode} = ${req.params.slpcode} AND ${snapshotsTop5Itens.capturedAt} = ${maxAt}`,
+      )
+      .orderBy(desc(snapshotsTop5Itens.percentual))
+  }
+)
 
 const port = env.API_PORT
 const host = env.API_HOST
