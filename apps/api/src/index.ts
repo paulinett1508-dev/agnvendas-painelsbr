@@ -1,4 +1,4 @@
-import './env.js'
+import { env } from './env.js'
 import Fastify from 'fastify'
 import cors from '@fastify/cors'
 import { db } from './db/client.js'
@@ -13,8 +13,8 @@ import { isAppError } from './errors.js'
 
 const app = Fastify({
   logger: {
-    level: process.env.NODE_ENV === 'production' ? 'info' : 'debug',
-    ...(process.env.NODE_ENV !== 'production' && {
+    level: env.NODE_ENV === 'production' ? 'info' : 'debug',
+    ...(env.NODE_ENV !== 'production' && {
       transport: { target: 'pino-pretty', options: { colorize: true } },
     }),
   },
@@ -114,8 +114,8 @@ app.get<{ Params: { slpcode: string } }>('/top5itens/:slpcode', async (req) => {
     .orderBy(desc(snapshotsTop5Itens.percentual))
 })
 
-const port = Number(process.env.API_PORT ?? 3001)
-const host = process.env.API_HOST ?? '0.0.0.0'
+const port = env.API_PORT
+const host = env.API_HOST
 
 app.listen({ port, host }, (err) => {
   if (err) {
