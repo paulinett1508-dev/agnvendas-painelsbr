@@ -5,6 +5,8 @@ const envSchema = z.object({
   API_PORT: z.coerce.number().int().positive().default(3001),
   API_HOST: z.string().default('0.0.0.0'),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
+  JWT_SECRET: z.string().min(32, 'JWT_SECRET deve ter pelo menos 32 caracteres'),
+  CORS_ORIGIN: z.string().min(1).default('http://localhost:5173'),
 })
 
 const parsed = envSchema.safeParse(process.env)
