@@ -17,9 +17,9 @@ const COOKIE_OPTS = {
 }
 
 export default async function authRoutes(app: FastifyInstance) {
-  // POST /auth/login
+  // POST /login
   app.post(
-    '/auth/login',
+    '/login',
     {
       schema: {
         body: z.object({
@@ -49,8 +49,8 @@ export default async function authRoutes(app: FastifyInstance) {
     },
   )
 
-  // POST /auth/refresh
-  app.post('/auth/refresh', async (req, reply) => {
+  // POST /refresh
+  app.post('/refresh', async (req, reply) => {
     const refreshToken = req.cookies?.[COOKIE_NAME]
     if (!refreshToken) throw new AppError(401, 'Refresh token ausente')
 
@@ -72,8 +72,8 @@ export default async function authRoutes(app: FastifyInstance) {
     return reply.send({ accessToken })
   })
 
-  // POST /auth/logout
-  app.post('/auth/logout', { onRequest: [app.authenticate] }, async (req, reply) => {
+  // POST /logout
+  app.post('/logout', { onRequest: [app.authenticate] }, async (req, reply) => {
     const payload = req.user as { sub: number }
     await db.update(usuarios).set({ refreshTokenHash: null }).where(eq(usuarios.id, payload.sub))
     return reply.clearCookie(COOKIE_NAME, COOKIE_OPTS).send({ ok: true })

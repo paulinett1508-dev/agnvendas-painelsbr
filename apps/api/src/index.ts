@@ -48,7 +48,7 @@ app.setErrorHandler((error, request, reply) => {
 
 await app.register(authenticate)
 
-await app.register(authRoutes)
+await app.register(authRoutes, { prefix: '/auth' })
 
 app.get('/health', async () => ({ status: 'ok' }))
 
