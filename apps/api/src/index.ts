@@ -1,6 +1,7 @@
 import { env } from './env.js'
 import Fastify from 'fastify'
 import cors from '@fastify/cors'
+import authenticate from './plugins/authenticate.js'
 import { db, pool } from './db/client.js'
 import {
   vendedores,
@@ -26,6 +27,8 @@ const app = Fastify({
 app.setValidatorCompiler(validatorCompiler)
 app.setSerializerCompiler(serializerCompiler)
 
+app.decorate('config', { JWT_SECRET: env.JWT_SECRET, CORS_ORIGIN: env.CORS_ORIGIN })
+
 await app.register(cors, { origin: true })
 
 app.setErrorHandler((error, request, reply) => {
@@ -39,15 +42,17 @@ app.setErrorHandler((error, request, reply) => {
   return reply.status(500).send({ error: 'Erro interno do servidor' })
 })
 
+await app.register(authenticate)
+
 app.get('/health', async () => ({ status: 'ok' }))
 
 // Lista todos os vendedores
-app.get('/vendedores', async () => {
+app.get('/vendedores', { onRequest: [app.authenticate] }, async () => {
   return db.select().from(vendedores).orderBy(vendedores.nome)
 })
 
 // Último snapshot de dashboard de cada vendedor
-app.get('/dashboard/latest', async () => {
+app.get('/dashboard/latest', { onRequest: [app.authenticate] }, async () => {
   const subquery = db
     .select({ slpcode: snapshotsDashboard.slpcode, maxAt: sql<Date>`MAX(${snapshotsDashboard.capturedAt})`.as('max_at') })
     .from(snapshotsDashboard)
@@ -77,6 +82,7 @@ app.get('/dashboard/latest', async () => {
 app.get(
   '/dashboard/:slpcode',
   {
+    onRequest: [app.authenticate],
     schema: {
       params: z.object({ slpcode: z.string().regex(/^\d{1,10}$/, 'slpcode inválido') }),
     },
@@ -92,7 +98,7 @@ app.get(
 )
 
 // Último snapshot de positivação de cada vendedor
-app.get('/positivacao/latest', async () => {
+app.get('/positivacao/latest', { onRequest: [app.authenticate] }, async () => {
   const subquery = db
     .select({ slpcode: snapshotsPositivacao.slpcode, maxAt: sql<Date>`MAX(${snapshotsPositivacao.capturedAt})`.as('max_at') })
     .from(snapshotsPositivacao)
@@ -112,6 +118,7 @@ app.get('/positivacao/latest', async () => {
 app.get(
   '/top5itens/:slpcode',
   {
+    onRequest: [app.authenticate],
     schema: {
       params: z.object({ slpcode: z.string().regex(/^\d{1,10}$/, 'slpcode inválido') }),
     },

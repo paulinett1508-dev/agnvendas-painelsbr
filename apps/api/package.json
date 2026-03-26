@@ -19,6 +19,7 @@
     "dotenv": "^17.3.1",
     "drizzle-orm": "^0.30.10",
     "fastify": "^4.27.0",
+    "fastify-plugin": "^5.1.0",
     "fastify-type-provider-zod": "^1.2.0",
     "pg": "^8.11.5",
     "pino": "^10.3.1",
