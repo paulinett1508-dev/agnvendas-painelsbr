@@ -51,3 +51,11 @@ export const snapshotsTop5Itens = pgTable('snapshots_top5itens', {
   percentual: numeric('percentual', { precision: 8, scale: 4 }),
   capturedAt: timestamp('captured_at', { withTimezone: true }).defaultNow(),
 })
+
+export const usuarios = pgTable('usuarios', {
+  id: serial('id').primaryKey(),
+  email: varchar('email', { length: 255 }).notNull().unique(),
+  senhaHash: varchar('senha_hash', { length: 255 }).notNull(),
+  refreshTokenHash: varchar('refresh_token_hash', { length: 255 }),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow(),
+})
